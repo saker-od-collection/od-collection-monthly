@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#123b5d">
+<title>OD Collection Monthly</title>
+<style>
+:root{--navy:#123b5d;--blue:#1769aa;--bg:#f3f6fa;--ink:#182536;--muted:#687789;--line:#e2e8f0;--green:#16834b;--orange:#b85b16;--red:#b42318}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:linear-gradient(130deg,#123b5d,#1769aa);color:white;padding:22px 16px 18px;border-radius:0 0 22px 22px}
+.brand{font-weight:800;font-size:22px;letter-spacing:.2px}.sub{font-size:12px;opacity:.85;margin-top:3px}.who{margin-top:16px;font-weight:700}.who small{display:block;font-weight:400;opacity:.85;margin-top:3px}
+main{max-width:900px;margin:auto;padding:14px 12px 90px}.datebar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:8px 2px 14px;font-size:13px;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.tile{border:0;border-radius:15px;padding:15px 7px;background:white;box-shadow:0 2px 10px #172b440d;text-align:center;color:var(--ink);font-weight:750;min-height:100px}.tile .ico{font-size:24px;display:block;margin-bottom:7px}.tile small{display:block;color:var(--muted);font-size:10px;font-weight:500;margin-top:4px}.tile.active{outline:2px solid var(--blue);background:#edf6ff}
+.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:14px;box-shadow:0 2px 10px #172b4408}.panel h2{font-size:17px;margin:0 0 10px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:#f6f9fc;border-radius:12px;padding:11px}.stat b{display:block;font-size:19px}.stat span{font-size:11px;color:var(--muted)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{border:0;border-radius:10px;padding:11px 13px;background:var(--navy);color:white;font-weight:650;font-size:13px}.btn.secondary{background:#eaf1f7;color:var(--navy)}.btn.green{background:var(--green)}.btn.red{background:#fff0ef;color:var(--red)}
+input,select,textarea{width:100%;border:1px solid #d5dee8;border-radius:9px;padding:11px;font:inherit;background:white;color:var(--ink);min-width:0}label{font-size:12px;font-weight:650;color:#475569;display:block;margin:9px 0 5px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}.full{grid-column:1/-1}
+.searchrow{display:flex;gap:8px;margin:10px 0}.searchrow input{flex:1}
+.vohead{display:flex;justify-content:space-between;align-items:center;gap:8px}.list{display:grid;gap:9px;margin-top:10px}.card{border:1px solid var(--line);border-radius:13px;padding:12px;background:#fff}.cardtop{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.membername{font-weight:750}.muted{font-size:12px;color:var(--muted);line-height:1.55}.pill{font-size:10px;border-radius:20px;padding:4px 8px;background:#fff0df;color:#96500f;white-space:nowrap}.pill.paid{background:#e7f7ee;color:#147a43}.pill.pending{background:#fff0df;color:#96500f}
+.cardactions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.cardactions button{padding:8px 10px;font-size:12px}
+.empty{text-align:center;color:var(--muted);padding:25px 8px;font-size:13px}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:4}
+nav button{border:0;background:none;color:var(--muted);font-size:11px;padding:4px;font-weight:650}nav button span{display:block;font-size:19px;margin-bottom:2px}
+.modal{position:fixed;inset:0;background:#0b1c2dcc;display:none;align-items:flex-end;justify-content:center;z-index:8}.modal.show{display:flex}.sheet{background:white;width:100%;max-width:650px;max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;padding:18px 16px 28px}.sheethead{display:flex;justify-content:space-between;align-items:center}.sheethead h2{margin:0;font-size:18px}.x{border:0;background:#edf2f7;border-radius:50%;width:34px;height:34px;font-size:18px}
+.note{font-size:11px;color:var(--muted);line-height:1.5;margin-top:10px}.date-entry{display:flex;gap:7px;align-items:center;margin:7px 0}.date-entry input{flex:1}.date-entry .btn{min-width:40px}.collection-entry{border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;background:#fbfdff}.collection-entry b{display:block;margin-bottom:7px}.add-row{margin-top:8px}.hidden{display:none!important}.toolbar{display:flex;gap:8px;flex-wrap:wrap}
+@media(min-width:650px){.modal{align-items:center}.sheet{border-radius:18px}.tile{min-height:110px}.tiles{gap:14px}}
+</style>
+
+<meta name="theme-color" content="#1769aa">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+
+<script>
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(console.error));
+}
+</script>
+</head>
+<body>
+<header>
+ <div class="brand">OD Collection Monthly</div><div class="sub">Monthly Overdue Collection Management</div>
+ <div class="who">CDO – MD SAKER ULLAH<small>Employee ID: 289849</small></div>
+</header>
+<main>
+ <div class="datebar"><span id="todayDate"></span><span id="clock"></span></div>
+ <div class="tiles">
+  <button class="tile active" data-view="new"><span class="ico">📅</span>New OD<small>Current Month</small></button>
+  <button class="tile" data-view="review"><span class="ico">📋</span>Review OD<small>All Current OD</small></button>
+  <button class="tile" data-view="late"><span class="ico">⏰</span>Late-1<small>1 to under 2 years</small></button>
+ </div>
+ <section class="panel" id="dashboard">
+  <h2>Collection Overview</h2>
+  <div class="stats">
+   <div class="stat"><b id="amountToday">৳0</b><span>Today Collection Target</span><small id="countToday">0 members</small></div>
+   <div class="stat"><b id="amountPrevious">৳0</b><span>Previous Months OD</span><small id="countPrevious">0 members</small></div>
+   <div class="stat"><b id="amountCurrent">৳0</b><span>Current Month OD</span><small id="countCurrent">0 members</small></div>
+  </div>
+  <div class="stats" style="margin-top:8px">
+   <div class="stat"><b id="countPending">0</b><span>Overdue Members</span></div>
+   <div class="stat"><b id="amountPending">৳0</b><span>Total Recorded OD</span></div>
+   <div class="stat"><b id="countLate">0</b><span>Late-1 Members</span></div>
+  </div>
+  <div class="actions"><button class="btn" id="syncBtn">↻ Synchronize</button><button class="btn secondary" id="addVoBtn">＋ Add VO Code</button><button class="btn secondary" id="addMemberBtn">＋ Add Member</button></div>
+  <div class="note" id="syncStatus">Local data is saved on this device. Export a backup regularly.</div>
+ </section>
+ <section class="panel">
+  <div class="vohead"><h2 id="viewTitle">New OD – Current Month</h2><span class="muted" id="resultCount">0 records</span></div>
+  <div class="searchrow"><input id="search" placeholder="Search VO, member number, name or phone"><select id="voFilter" style="max-width:130px"><option value="">All VOs</option></select></div>
+  <div id="memberList" class="list"><div class="empty">No records yet. Add a VO code and member to begin.</div></div>
+ </section>
+ <section class="panel">
+  <h2>Data & Backup</h2><div class="toolbar"><button class="btn secondary" id="exportBtn">Export Backup</button><button class="btn secondary" id="importBtn">Import Backup</button><button class="btn secondary" id="csvBtn">Export CSV</button><input type="file" id="fileInput" accept=".json,application/json" class="hidden"></div>
+  <p class="note">This starter version works offline in this browser. Synchronize refreshes the date-based lists; it does not upload data to a server or share data between devices. Actual collection dates and amounts are stored as separate entries per member. Keep backup files safe.</p>
+ </section>
+</main>
+<nav><button data-nav="today"><span>☀️</span>Today</button><button data-nav="new"><span>📅</span>New OD</button><button data-nav="review"><span>📋</span>Review OD</button><button data-nav="late"><span>⏰</span>Late-1</button><button data-nav="settings"><span>⚙️</span>Data</button></nav>
+<div class="modal" id="modal"><div class="sheet"><div class="sheethead"><h2 id="modalTitle">Add Member</h2><button class="x" id="closeModal">×</button></div><div id="modalBody"></div></div></div>
+<script>
+const KEY='od_collection_monthly_v1';
+let db=loadDB(), view='new', editingId=null;
+db.members.forEach(m=>{if(!Array.isArray(m.collections))m.collections=[];});
+function loadDB(){try{return JSON.parse(localStorage.getItem(KEY))||{vos:[],members:[],lastSync:null}}catch(e){return{vos:[],members:[],lastSync:null}}}
+function save(){localStorage.setItem(KEY,JSON.stringify(db));}
+function today(){let d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate())}
+function dateISO(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function parseDate(s){if(!s)return null;let p=s.split('-').map(Number);return new Date(p[0],p[1]-1,p[2])}
+function fmt(s){let d=typeof s==='string'?parseDate(s):s;if(!d||isNaN(d))return '—';return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}
+function daysBetween(a,b){return Math.floor((b-a)/86400000)}
+function yearsBetween(s){let d=parseDate(s),n=today();if(!d)return -1;let y=n.getFullYear()-d.getFullYear();let anniversary=new Date(n.getFullYear(),d.getMonth(),d.getDate());if(n<anniversary)y--;return y}
+function money(n){return '৳'+Number(n||0).toLocaleString('en-BD',{maximumFractionDigits:2})}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function dueDates(m){let ds=Array.isArray(m.expectedDates)?m.expectedDates:[m.date1,m.date2,m.date3];return ds.filter(Boolean)}
+function isPending(m){return m.status!=='Paid'}
+function isOverdue(m){return isPending(m)&&dueDates(m).some(x=>parseDate(x)<=today())}
+function dueThisMonth(m){return isPending(m)&&dueDates(m).some(x=>{let d=parseDate(x),n=today();return d&&d.getFullYear()===n.getFullYear()&&d.getMonth()===n.getMonth()&&d<=new Date(n.getFullYear(),n.getMonth()+1,0)})}
+function currentOD(m){return isOverdue(m)}
+function selectedMembers(){
+ let q=document.getElementById('search').value.toLowerCase(),vo=document.getElementById('voFilter').value;
+ return db.members.filter(m=>{
+  let v=db.vos.find(x=>x.id===m.voId),text=[m.number,m.name,m.phone,v?.code].join(' ').toLowerCase();
+  if(q&&!text.includes(q))return false;if(vo&&m.voId!==vo)return false;
+  if(view==='new')return dueThisMonth(m);
+  if(view==='review')return currentOD(m);
+  if(view==='late'){let y=yearsBetween(m.disbursementDate);return y>=1&&y<2}
+  if(view==='today')return isPending(m)&&dueDates(m).some(x=>x===dateISO(today()));
+  return true;
+ }).sort((a,b)=>Math.min(...dueDates(a).map(x=>parseDate(x)?.getTime()||Infinity))-Math.min(...dueDates(b).map(x=>parseDate(x)?.getTime()||Infinity)));
+}
+
+function collectionTotal(m){return (m.collections||[]).reduce((s,c)=>s+Number(c.amount||0),0)}
+function collectionSummary(m){
+ let cs=m.collections||[];
+ if(!cs.length)return 'No collection recorded';
+ return cs.map(c=>`${fmt(c.date)}: ${money(c.amount)}${c.remarks?' ('+esc(c.remarks)+')':''}`).join(' · ')+' · Total: '+money(collectionTotal(m));
+}
+function recordCollection(id){
+ let m=db.members.find(x=>x.id===id);if(!m)return;
+ openModal('Record Actual Collection',`<form id="collectionForm">
+ <div class="muted">Member: <b>${esc(m.name)}</b> · No: ${esc(m.number)}</div>
+ <label>Actual Collection Date *</label><input type="date" name="date" required value="${dateISO(today())}">
+ <label>Actual Collection Amount (BDT) *</label><input type="number" name="amount" min="0.01" step=".01" required placeholder="Enter amount collected">
+ <label>Remarks (optional)</label><input name="remarks" placeholder="Payment note">
+ <div class="actions"><button class="btn green" type="submit">Save Collection</button></div>
+ </form>
+ <div class="note">Each collection is saved as a separate entry, so multiple partial collections and their dates can be tracked.</div>`);
+ document.getElementById('collectionForm').addEventListener('submit',e=>{
+  e.preventDefault();let f=new FormData(e.target),entry={date:f.get('date'),amount:Number(f.get('amount')||0),remarks:(f.get('remarks')||'').trim()};
+  if(!entry.date||entry.amount<=0)return alert('Enter a valid date and amount.');
+  m.collections=m.collections||[];m.collections.push(entry);
+  let totalDue=Number(m.previousArrears||0)+Number(m.currentMonthOD||0);
+  if(totalDue>0)m.status=collectionTotal(m)>=totalDue?'Paid':'Pending';
+  m.lastCollectionDate=entry.date;
+  save();closeModal();render();
+ });
+}
+
+function render(){
+ let n=today();document.getElementById('todayDate').textContent=n.toLocaleDateString('en-US',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+ document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+ document.querySelectorAll('[data-view],[data-nav]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
+ let titles={new:'New OD – Current Month',review:'Review OD – All Current Overdue',late:'Late-1 – 1 Year Completed',today:"Today's Collection",settings:'Data & Backup'};
+ document.getElementById('viewTitle').textContent=titles[view]||titles.new;
+ let dueToday=db.members.filter(m=>isPending(m)&&dueDates(m).includes(dateISO(n)));
+ let pending=db.members.filter(m=>isOverdue(m));
+ let prev=db.members.filter(m=>isPending(m)&&Number(m.previousArrears||0)>0);
+ let curr=db.members.filter(m=>isPending(m)&&Number(m.currentMonthOD||0)>0);
+ let totalPrev=prev.reduce((s,m)=>s+Number(m.previousArrears||0),0);
+ let totalCurr=curr.reduce((s,m)=>s+Number(m.currentMonthOD||0),0);
+ let todayTarget=dueToday.reduce((s,m)=>s+Number(m.installment||0),0);
+ document.getElementById('countToday').textContent=dueToday.length+' members';
+ document.getElementById('amountToday').textContent=money(todayTarget);
+ document.getElementById('countPrevious').textContent=prev.length+' members';
+ document.getElementById('amountPrevious').textContent=money(totalPrev);
+ document.getElementById('countCurrent').textContent=curr.length+' members';
+ document.getElementById('amountCurrent').textContent=money(totalCurr);
+ document.getElementById('countPending').textContent=pending.length;
+ document.getElementById('amountPending').textContent=money(totalPrev+totalCurr);
+ document.getElementById('countLate').textContent=db.members.filter(m=>{let y=yearsBetween(m.disbursementDate);return y>=1&&y<2}).length;
+ let vf=document.getElementById('voFilter'),old=vf.value;vf.innerHTML='<option value="">All VOs</option>'+db.vos.map(v=>`<option value="${v.id}">${esc(v.code)}</option>`).join('');vf.value=old;
+ let arr=selectedMembers();document.getElementById('resultCount').textContent=arr.length+' records';
+ let list=document.getElementById('memberList');
+ if(!arr.length){list.innerHTML='<div class="empty">No matching members found.</div>';return}
+ list.innerHTML=arr.map(m=>{let v=db.vos.find(x=>x.id===m.voId),dates=dueDates(m).map((d,i)=>`D${i+1}: ${fmt(d)}`).join(' · ');return `<article class="card"><div class="cardtop"><div><div class="membername">${esc(m.name)}</div><div class="muted">Member: ${esc(m.number)} · VO: ${esc(v?.code||'—')}</div></div><span class="pill ${m.status==='Paid'?'paid':'pending'}">${esc(m.status||'Pending')}</span></div><div class="muted">Disbursement: ${fmt(m.disbursementDate)} · Loan: ${money(m.loanAmount)}<br>Installment: ${money(m.installment)} · ${esc(m.overdueType||'OD Type not set')}<br>Previous Months OD: ${money(m.previousArrears||0)} · Current Month OD: ${money(m.currentMonthOD||0)}<br>${dates}<br>Mobile: ${esc(m.phone||'—')}<br>Remarks: ${esc(m.remarks||'—')}<br><b>Actual Collection History:</b> ${collectionSummary(m)}<br><b>Total Collected:</b> ${money(collectionTotal(m))} · <b>Outstanding:</b> ${money(Math.max(0,Number(m.previousArrears||0)+Number(m.currentMonthOD||0)-collectionTotal(m)))}</div><div class="cardactions"><button class="btn green" onclick="recordCollection('${m.id}')">＋ Add Collection</button><button class="btn secondary" onclick="editMember('${m.id}')">Edit</button><button class="btn red" onclick="deleteMember('${m.id}')">Delete</button></div></article>`}).join('');
+}
+function setView(v){view=v;render();window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('[data-view],[data-nav]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view||b.dataset.nav)));
+document.getElementById('search').addEventListener('input',render);document.getElementById('voFilter').addEventListener('change',render);
+function openModal(title,html){document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=html;document.getElementById('modal').classList.add('show')}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+document.getElementById('closeModal').onclick=closeModal;document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+document.getElementById('modalBody').addEventListener('click',e=>{
+ let form=document.getElementById('memberForm');if(!form)return;
+ if(e.target.id==='addExpectedDate'){let box=document.getElementById('expectedDateRows'),row=document.createElement('div');row.className='date-entry';row.innerHTML='<input type="date" name="expectedDate[]" aria-label="Expected collection date"><button type="button" class="btn red remove-row">×</button>';box.appendChild(row)}
+ if(e.target.id==='addActualCollection'){let box=document.getElementById('actualCollectionRows'),count=box.querySelectorAll('.collection-entry').length,row=document.createElement('div');row.innerHTML=collectionEntryHTML({},count);box.appendChild(row.firstElementChild)}
+ if(e.target.classList.contains('remove-row')){let row=e.target.closest('.date-entry,.collection-entry');if(row){let parent=row.parentElement;if(parent.children.length>1)row.remove();else if(row.classList.contains('date-entry'))row.querySelector('input').value='';else row.querySelectorAll('input').forEach(x=>x.value='');updateMemberCollectionTotals()}}
+});
+document.getElementById('modalBody').addEventListener('input',e=>{if(e.target.name==='collectionAmount[]'||e.target.name==='previousArrears'||e.target.name==='currentMonthOD')updateMemberCollectionTotals()});
+function updateMemberCollectionTotals(){
+ let f=document.getElementById('memberForm');if(!f)return;
+ let total=[...f.querySelectorAll('[name="collectionAmount[]"]')].reduce((s,x)=>s+Number(x.value||0),0);
+ let due=Number(f.elements.previousArrears?.value||0)+Number(f.elements.currentMonthOD?.value||0);
+ let t=document.getElementById('memberTotalCollected'),o=document.getElementById('memberOutstanding');
+ if(t)t.textContent=money(total);if(o)o.textContent=money(Math.max(0,due-total));
+}
+
+document.getElementById('addVoBtn').onclick=()=>openModal('Add VO Code',`<form id="voForm"><label>VO Code *</label><input name="code" required placeholder="Example: 2715-001"><label>VO Name (optional)</label><input name="name" placeholder="Village / centre name"><div class="actions"><button class="btn" type="submit">Save VO</button></div></form>`);
+document.getElementById('modalBody').addEventListener('submit',e=>{if(e.target.id==='voForm'){e.preventDefault();let f=new FormData(e.target),code=f.get('code').trim();if(db.vos.some(v=>v.code.toLowerCase()===code.toLowerCase()))return alert('This VO code already exists.');db.vos.push({id:crypto.randomUUID(),code,name:f.get('name').trim()});save();closeModal();render()}if(e.target.id==='memberForm'){e.preventDefault();let f=new FormData(e.target),m=Object.fromEntries(f.entries());m.id=editingId||crypto.randomUUID();m.status=m.status||'Pending';m.loanAmount=Number(m.loanAmount||0);m.installment=Number(m.installment||0);m.previousArrears=Number(m.previousArrears||0);m.currentMonthOD=Number(m.currentMonthOD||0);m.expectedDates=f.getAll('expectedDate[]').filter(Boolean);m.collections=f.getAll('collectionDate[]').map((date,i)=>({date,amount:Number(f.getAll('collectionAmount[]')[i]||0),remarks:(f.getAll('collectionRemarks[]')[i]||'').trim()})).filter(c=>c.date&&c.amount>0);if(editingId){db.members=db.members.map(x=>x.id===editingId?m:x)}else{db.members.push(m)}save();closeModal();editingId=null;render()}});
+function memberForm(m={}){
+ let opts=db.vos.map(v=>`<option value="${v.id}" ${m.voId===v.id?'selected':''}>${esc(v.code)} ${esc(v.name||'')}</option>`).join('');
+ let expected=Array.isArray(m.expectedDates)?m.expectedDates:[m.date1,m.date2,m.date3].filter(Boolean);
+ if(!expected.length)expected=[''];
+ let collections=Array.isArray(m.collections)?m.collections:[];
+ let expectedRows=expected.map((d,i)=>`<div class="date-entry"><input type="date" name="expectedDate[]" value="${esc(d)}" aria-label="Expected Date ${i+1}"><button type="button" class="btn red remove-row" title="Remove date">×</button></div>`).join('');
+ let collectionRows=collections.map((c,i)=>collectionEntryHTML(c,i)).join('');
+ let total=collections.reduce((s,c)=>s+Number(c.amount||0),0),due=Number(m.previousArrears||0)+Number(m.currentMonthOD||0);
+ return `<form id="memberForm">
+ <div class="formgrid">
+ <div><label>VO Code *</label><select name="voId" required>${opts||'<option value="">Add VO first</option>'}</select></div>
+ <div><label>Member Number *</label><input name="number" required value="${esc(m.number||'')}"></div>
+ <div class="full"><label>Member Name *</label><input name="name" required value="${esc(m.name||'')}"></div>
+ <div><label>Loan Disbursement Date *</label><input type="date" name="disbursementDate" required value="${esc(m.disbursementDate||'')}"></div>
+ <div><label>Loan Disbursement Amount (BDT)</label><input type="number" min="0" step=".01" name="loanAmount" value="${esc(m.loanAmount??'')}"></div>
+ <div><label>Installment Amount (BDT)</label><input type="number" min="0" step=".01" name="installment" value="${esc(m.installment??'')}"></div>
+ <div><label>Previous Months Total OD (BDT)</label><input type="number" min="0" step=".01" name="previousArrears" value="${esc(m.previousArrears??0)}"></div>
+ <div><label>Current Month OD (BDT)</label><input type="number" min="0" step=".01" name="currentMonthOD" value="${esc(m.currentMonthOD??0)}"></div>
+ <div><label>Overdue Installment Type</label><select name="overdueType"><option ${m.overdueType==='Quarterly'?'selected':''}>Quarterly</option><option ${m.overdueType==='Monthly'?'selected':''}>Monthly</option><option ${m.overdueType==='Other'?'selected':''}>Other</option></select></div>
+ <div class="full">
+  <label>Expected Collection Date</label><div id="expectedDateRows">${expectedRows}</div>
+  <button type="button" class="btn secondary add-row" id="addExpectedDate">＋ Add Expected Date</button>
+  <div class="note">Add as many expected dates as required.</div>
+ </div>
+ <div><label>Mobile Number</label><input name="phone" inputmode="tel" value="${esc(m.phone||'')}"></div>
+ <div><label>Collection Status</label><select name="status"><option ${(!m.status||m.status==='Pending')?'selected':''}>Pending</option><option ${m.status==='Paid'?'selected':''}>Paid</option></select></div>
+ <div class="full"><label>Remarks</label><textarea name="remarks" rows="2">${esc(m.remarks||'')}</textarea></div>
+ </div>
+ <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+ <h3 style="font-size:16px;margin:0 0 10px">Actual Collection Entry</h3>
+ <div id="actualCollectionRows">${collectionRows||collectionEntryHTML({},0)}</div>
+ <button type="button" class="btn secondary add-row" id="addActualCollection">＋ Add Actual Collection</button>
+ <div class="panel" style="margin-top:12px;background:#f8fafc">
+  <div style="display:flex;justify-content:space-between;gap:8px"><b>Total Collected</b><b id="memberTotalCollected" style="color:var(--green)">${money(total)}</b></div>
+  <div style="display:flex;justify-content:space-between;gap:8px;margin-top:8px"><span>Outstanding Amount</span><b id="memberOutstanding">${money(Math.max(0,due-total))}</b></div>
+  <div class="note">Each partial payment is saved with its own actual collection date and amount.</div>
+ </div>
+ <div class="actions"><button class="btn" type="submit">${editingId?'Update Member':'Save Member'}</button></div>
+ </form>`
+}
+function collectionEntryHTML(c={},i=0){return `<div class="collection-entry">
+ <b>Collection Entry ${i+1}</b>
+ <label>Collection Date</label><input type="date" name="collectionDate[]" value="${esc(c.date||'')}">
+ <label>Collection Amount (৳)</label><input type="number" name="collectionAmount[]" min="0" step=".01" value="${esc(c.amount??'')}" placeholder="Enter amount collected">
+ <label>Remarks (optional)</label><input name="collectionRemarks[]" value="${esc(c.remarks||'')}" placeholder="Payment note">
+ <button type="button" class="btn red remove-row">Remove Entry</button>
+ </div>`}
+document.getElementById('addMemberBtn').onclick=()=>{if(!db.vos.length)return alert('Please add a VO code first.');editingId=null;openModal('Add New Member',memberForm())};
+function editMember(id){let m=db.members.find(x=>x.id===id);if(!m)return;editingId=id;openModal('Edit Member',memberForm(m))}
+function markPaid(id){let m=db.members.find(x=>x.id===id);if(m&&confirm('Mark '+m.name+' as Paid?')){m.status='Paid';m.paidDate=dateISO(today());save();render()}}
+function deleteMember(id){if(confirm('Delete this member record? This cannot be undone unless you have a backup.')){db.members=db.members.filter(x=>x.id!==id);save();render()}}
+document.getElementById('syncBtn').onclick=()=>{db.lastSync=new Date().toISOString();save();document.getElementById('syncStatus').textContent='Last refreshed: '+new Date().toLocaleString()+' · Date-based lists updated.';render()};
+document.getElementById('exportBtn').onclick=()=>download('od-collection-backup-'+dateISO(today())+'.json',JSON.stringify(db,null,2),'application/json');
+document.getElementById('importBtn').onclick=()=>document.getElementById('fileInput').click();
+document.getElementById('fileInput').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let d=JSON.parse(await f.text());if(!Array.isArray(d.vos)||!Array.isArray(d.members))throw Error();if(confirm('Replace current data with this backup?')){db=d;save();render();alert('Backup imported successfully.')}}catch(err){alert('Invalid backup file.')}e.target.value=''};
+function download(name,data,type){let a=document.createElement('a'),url=URL.createObjectURL(new Blob([data],{type}));a.href=url;a.download=name;a.click();URL.revokeObjectURL(url)}
+document.getElementById('csvBtn').onclick=()=>{let rows=[['VO Code','Member Number','Member Name','Disbursement Date','Loan Amount','Installment','Previous Months OD','Current Month OD','Expected Collection Dates','Overdue Type','Mobile','Status','Remarks','Actual Collection Date(s)','Actual Collection Amount(s)','Total Collected','Outstanding Amount'],...db.members.map(m=>[db.vos.find(v=>v.id===m.voId)?.code||'',m.number,m.name,m.disbursementDate,m.loanAmount,m.installment,m.previousArrears||0,m.currentMonthOD||0,dueDates(m).join(' | '),m.overdueType,m.phone,m.status,m.remarks,(m.collections||[]).map(c=>c.date).join(' | '),(m.collections||[]).map(c=>Number(c.amount||0)).join(' | '),collectionTotal(m),Math.max(0,Number(m.previousArrears||0)+Number(m.currentMonthOD||0)-collectionTotal(m))])];let csv=rows.map(r=>r.map(x=>'"'+String(x??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');download('od-members-'+dateISO(today())+'.csv',csv,'text/csv;charset=utf-8')};
+setInterval(()=>{document.getElementById('clock').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});},30000);
+render();
+</script>
+</body></html>
